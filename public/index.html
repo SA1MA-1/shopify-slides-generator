@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إنشاء شريحة مخصصة</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f4f4f9;
+    }
+    h1 {
+      color: #333;
+    }
+    form {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 500px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .message {
+      margin-top: 15px;
+      font-weight: bold;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <h1>إضافة شريحة جديدة إلى Google Slides</h1>
+  <form id="slideForm">
+    <label for="title">عنوان الشريحة:</label>
+    <input type="text" id="title" name="title" placeholder="أدخل عنوان الشريحة" required>
+
+    <label for="body">نص الشريحة:</label>
+    <textarea id="body" name="body" rows="5" placeholder="أدخل نص الشريحة" required></textarea>
+
+    <label for="orderId">رقم الطلب (Order ID):</label>
+    <input type="text" id="orderId" name="orderId" placeholder="أدخل رقم الطلب" required>
+
+    <label for="email">البريد الإلكتروني للعميل:</label>
+    <input type="email" id="email" name="email" placeholder="أدخل البريد الإلكتروني" required>
+
+    <button type="submit">إنشاء الشريحة</button>
+
+    <div class="message" id="message"></div>
+  </form>
+
+  <script>
+    const form = document.getElementById('slideForm');
+    const message = document.getElementById('message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const title = document.getElementById('title').value;
+      const body = document.getElementById('body').value;
+      const orderId = document.getElementById('orderId').value;
+      const email = document.getElementById('email').value;
+
+      try {
+        const response = await fetch('/add-text', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ title, body, orderId, customerEmail: email })
+        });
+
+        const result = await response.text();
+        message.textContent = result; // يعرض رسالة النجاح
+        form.reset();
+      } catch (err) {
+        message.style.color = 'red';
+        message.textContent = 'حدث خطأ أثناء إنشاء الشريحة';
+        console.error(err);
+      }
+    });
+  </script>
+</body>
+</html>
